@@ -24,13 +24,15 @@ URL:            http://projects.spring.io/spring-xd
 %define INSTALL_DIR_ESC     \\\/opt\\\/pivotal\\\/spring-xd
 %define INIT_FILE_ADMIN       spring-xd-admin
 %define INIT_FILE_CONTAINER    spring-xd-container
+%define INIT_FILE_SINGLENODE    spring-xd-singlenode
 %define SYSCONFIG_FILE    spring-xd
 
 Source0:        spring-xd-%{version}-dist.zip
 # init scripts
 Source1:        %{INIT_FILE_ADMIN}
 Source2:        %{INIT_FILE_CONTAINER}
-Source3:        %{SYSCONFIG_FILE}
+Source3:        %{INIT_FILE_SINGLENODE}
+Source4:        %{SYSCONFIG_FILE}
 
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -105,11 +107,13 @@ cp -rp %{_builddir}/%{name}-%{version}/* %{buildroot}%{INSTALL_DIR}-%{version}/
 mkdir -p %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs
 touch %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs/admin.log
 touch %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs/container.log
+touch %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs/singlenodelog
 mkdir -p %{buildroot}%{INSTALL_DIR}-%{version}/xd/data/jobs
 
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp -p %{_builddir}/%{INIT_FILE_ADMIN} %{buildroot}/etc/rc.d/init.d/
 cp -p %{_builddir}/%{INIT_FILE_CONTAINER} %{buildroot}/etc/rc.d/init.d/
+cp -p %{_builddir}/%{INIT_FILE_SINGLENODE} %{buildroot}/etc/rc.d/init.d/
 
 mkdir -p %{buildroot}/etc/sysconfig
 cp -p %{_builddir}/%{SYSCONFIG_FILE} %{buildroot}/etc/sysconfig/
@@ -126,6 +130,7 @@ cp -p %{_builddir}/%{SYSCONFIG_FILE} %{buildroot}/etc/sysconfig/
 
 %ghost %{INSTALL_DIR}-%{version}/xd/logs/admin.log
 %ghost %{INSTALL_DIR}-%{version}/xd/logs/container.log
+%ghost %{INSTALL_DIR}-%{version}/xd/logs/singlenode.log
 
 %attr(755, root, root) /etc/rc.d/init.d/*
 %config(noreplace) %attr(644, root, root) /etc/sysconfig/%{SYSCONFIG_FILE}
@@ -137,7 +142,7 @@ if [ "$1" = "1" ]; then
 
    # configure chkconfig
    chkconfig --add %{INIT_FILE_ADMIN}
-   chkconfig --add %{INIT_FILE_CONTAINER}
+   chkconfig --add %{INIT_FILE_SINGLENODE}
 
    # add softlink
    ln -s %{INSTALL_DIR}-%{version} %{INSTALL_DIR}
@@ -151,14 +156,16 @@ fi # end if for RPM not presently installed
 if [ "$1" = "0" ]; then
    # stop proc
    service %{INIT_FILE_CONTAINER} stop > /dev/null
+   service %{INIT_FILE_SINGLENODE} stop > /dev/null
    service %{INIT_FILE_ADMIN} stop > /dev/null
 
    # remove from chkconfig
    chkconfig --del %{INIT_FILE_CONTAINER}
+   chkconfig --del %{INIT_FILE_SINGLENODE}
    chkconfig --del %{INIT_FILE_ADMIN}
    
    # remove old log files
-   rm -f %{INSTALL_DIR}-%{version}/xd/logs/{admin,container}.log.*
+   rm -f %{INSTALL_DIR}-%{version}/xd/logs/{admin,container,singlenode}.log.*
 
 fi
 

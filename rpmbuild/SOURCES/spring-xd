@@ -33,6 +33,10 @@ ADMIN_LOGFILE=${XD_HOME}/xd/logs/admin.log
 # xd-container-logger.properties
 CONTAINER_LOGFILE=${XD_HOME}/xd/logs/container.log
 
+# SINGLENODE_LOGFILE must match log4j.appender.file.File in
+# xd-singlenode-logger.properties
+SINGLENODE_LOGFILE=${XD_HOME}/xd/logs/singlenode.log
+
 # The group memberships for this container as a quoted
 # comma delimited string
 # "VAL1, VAL2"
