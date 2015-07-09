@@ -1,6 +1,6 @@
 # Spring-XD spec file for RHEL 6
 
-Name:           spring-xd 
+Name:           spring-xd-yarn
 Version:        1.2.0.RELEASE
 Release:        1
 Summary:        Pivotal Spring XD: One stop solution to simplify Big Data complexity
@@ -8,7 +8,7 @@ Summary:        Pivotal Spring XD: One stop solution to simplify Big Data comple
 Group:          Applications/Databases
 License:        Apache License v2.0
 Vendor:         Pivotal
-Packager:       spring-xd@pivotal.io
+Packager:       cpence@squareatom.com
 URL:            http://projects.spring.io/spring-xd
 
 # Disable automatic dependency processing
@@ -27,7 +27,7 @@ URL:            http://projects.spring.io/spring-xd
 %define INIT_FILE_SINGLENODE    spring-xd-singlenode
 %define SYSCONFIG_FILE    spring-xd
 
-Source0:        spring-xd-%{version}-dist.zip
+Source0:        spring-xd-yarn-%{version}.zip
 # init scripts
 Source1:        %{INIT_FILE_ADMIN}
 Source2:        %{INIT_FILE_CONTAINER}
@@ -37,7 +37,7 @@ Source4:        %{SYSCONFIG_FILE}
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#BuildRequires:  
+#BuildRequires:
 
 Requires: chkconfig
 
@@ -71,6 +71,7 @@ fi
 cp -p %SOURCE1 .
 cp -p %SOURCE2 .
 cp -p %SOURCE3 .
+cp -p %SOURCE4 .
 
 
 ###%build
@@ -107,7 +108,7 @@ cp -rp %{_builddir}/%{name}-%{version}/* %{buildroot}%{INSTALL_DIR}-%{version}/
 mkdir -p %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs
 touch %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs/admin.log
 touch %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs/container.log
-touch %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs/singlenodelog
+touch %{buildroot}%{INSTALL_DIR}-%{version}/xd/logs/singlenode.log
 mkdir -p %{buildroot}%{INSTALL_DIR}-%{version}/xd/data/jobs
 
 mkdir -p %{buildroot}/etc/rc.d/init.d
@@ -143,6 +144,7 @@ if [ "$1" = "1" ]; then
    # configure chkconfig
    chkconfig --add %{INIT_FILE_ADMIN}
    chkconfig --add %{INIT_FILE_SINGLENODE}
+   chkconfig --add %{INIT_FILE_CONTAINER}
 
    # add softlink
    ln -s %{INSTALL_DIR}-%{version} %{INSTALL_DIR}
