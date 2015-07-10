@@ -1,6 +1,6 @@
 # Spring-XD spec file for RHEL 6
 
-Name:           spring-xd-yarn
+Name:           spring-xd
 Version:        1.2.0.RELEASE
 Release:        1
 Summary:        Pivotal Spring XD: One stop solution to simplify Big Data complexity
@@ -27,7 +27,7 @@ URL:            http://projects.spring.io/spring-xd
 %define INIT_FILE_SINGLENODE    spring-xd-singlenode
 %define SYSCONFIG_FILE    spring-xd
 
-Source0:        spring-xd-yarn-%{version}.zip
+Source0:        spring-xd-%{version}-yarn.zip
 # init scripts
 Source1:        %{INIT_FILE_ADMIN}
 Source2:        %{INIT_FILE_CONTAINER}
